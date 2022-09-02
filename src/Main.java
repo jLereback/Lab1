@@ -28,12 +28,18 @@ public class Main {
 
 
     private static void input() {
-        Scanner scIn = new Scanner();
+        Scanner sc = new Scanner(System.in);
 
-        int[] priceOfHour;
-        System.out.println("Skriv in elpriserna för dygnets alla timmar");
-        priceOfHour = new int[24];
+        System.out.println("För hur många timmar vill du skriva in elpriser?\n" +
+                "Obs. Timmarna måste vara sammanhängande");
+        int numOfHours = sc.nextInt();
+        int[] prices = new int[numOfHours];
+
+        System.out.println("Skriv in priserna i hela ören och tryck på \"Enter\" mellan inmatningarna");
+        for (int i = 0; i < prices.length; i++) {
+            prices[i] = sc.nextInt();
         }
+    }
 
     private static void minMaxMedel() {
     return;
