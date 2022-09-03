@@ -39,6 +39,7 @@ public class Main {
         for (int i = 0; i < prices.length; i++) {
             prices[i] = sc.nextInt();
         }
+        System.out.println(prices[4]);
     }
 
     private static void minMaxMedel() {
