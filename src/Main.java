@@ -23,7 +23,9 @@ public class Main {
                     2. Min, Max och Medel
                     3. Sortera
                     4. Bästa Laddningstid (4h)
-                    e. Avsluta""");
+                    e. Avsluta
+                    
+                    """);
             choice = sc.nextLine();
             choice = choice.toLowerCase();
 
@@ -47,12 +49,10 @@ public class Main {
         int[] price = new int[24];
 
 
-
         for (int i = 0; i < price.length; i++) {
             try {
                 price[i] = Integer.parseInt(sc.nextLine());
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Endast inmatning med heltal är accepterat");
                 input();
             }
@@ -135,7 +135,6 @@ public class Main {
             bubbleSort = false;
             for (int i = 0; i <= priceClone.length - 2; i++) {
                 if (priceClone[i] > priceClone[i + 1]) {
-                    //Swap priceClone[i] and priceClone[i+1]
                     int temp = priceClone[i + 1];
                     priceClone[i + 1] = priceClone[i];
                     priceClone[i] = temp;
@@ -162,18 +161,22 @@ public class Main {
         }
     }
 
-    private static void bestChargingTime(int[] price) {
-        int lowPrice = 0;
+    public static void bestChargingTime(int[] price) {
+        int lowPrice = Integer.MAX_VALUE;
+        int[] bestTimes = new int[2];
 
         for (int i = 0; i < price.length; i++) {
             if (i == price.length - 3)
                 break;
             int sum = price[i] + price[i + 1] + price[i + 2] + price[i + 3];
-            if (sum < lowPrice)
+            if (sum < lowPrice) {
                 lowPrice = sum;
+                bestTimes[0] = i;
+                bestTimes[1] = i + 3;
 
+            }
         }
-        System.out.println("Det är bäst att ladda bilen mellan klockan " + lowPrice);
+        System.out.println("Det är bäst att ladda bilen mellan klockan " + bestTimes[0] + " och " + bestTimes[1]);
 
     }
 
