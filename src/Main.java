@@ -1,16 +1,17 @@
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 
 public class Main {
 
     public static void main(String[] args) {
-        meny();
+        menu();
     }
 
-    public static void meny() {
+    public static void menu() {
         Scanner sc = new Scanner(System.in);
 
-        int[] price = new int[5];
+        int[] prices = new int[5];
 
         String choice;
         do {
@@ -23,6 +24,7 @@ public class Main {
                     2. Min, Max och Medel
                     3. Sortera
                     4. Bästa Laddningstid (4h)
+                    5. Horisontellt Histogram
                     e. Avsluta
                                         
                     """);
@@ -30,139 +32,151 @@ public class Main {
             choice = choice.toLowerCase();
 
             switch (choice) {
-                case "1" -> input(price);
-                case "2" -> minMaxAvg(price);
-                case "3" -> sort(price);
-                case "4" -> bestChargingTime(price);
+                case "1" -> input(prices);
+                case "2" -> minMaxAvg(prices);
+                case "3" -> sort(prices);
+                case "4" -> bestChargingTime(prices);
+//                case "5" -> graph(prices);
+                case "5" -> graphInProgress(prices);
                 case "e" -> quit();
                 default -> System.out.println("Vänligen välj ett av alternativen nedan:");
             }
         } while (!choice.equals("e"));
     }
 
-    public static void input(int[] price) {
+    public static void input(int[] prices) {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Skriv in priserna i hela ören och tryck på \"Enter\" mellan inmatningarna");
 
-        for (int i = 0; i < price.length; i++) {
+        inputPrice(prices, sc);
+        System.out.println("Nu har du matat in alla priser");
+    }
+
+    private static void inputPrice(int[] prices, Scanner sc) {
+        for (int i = 0; i < prices.length; i++) {
             try {
                 System.out.println("Skriv in priset för klockan " + formatHour(i));
-                price[i] = Integer.parseInt(sc.nextLine());
+                prices[i] = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Endast inmatning med heltal är accepterat");
                 i--;
             }
         }
-        System.out.println("Nu har du matat in alla priser");
     }
 
-    private static void minMaxAvg(int[] price) {
-        int min = price[0];
+    private static void minMaxAvg(int[] prices) {
+
+        System.out.println("Lägsta priset är " + getMinPrice(prices) + " öre klockan " + formatHour(getMinHour(prices)));
+        System.out.println("Högsta priset är " + getMaxPrice(prices) + " öre klockan " + formatHour(getMaxHour(prices)));
+        System.out.printf("Medelpriset för hela dygnet är %.2f öre\n", getAvgPrice(prices));
+    }
+
+    private static int getMinPrice(int[] prices) {
+
+        int min = prices[0];
+
+        for (int j : prices) {
+            if (j < min) {
+                min = j;
+            }
+        }
+        return min;
+    }
+
+    private static int getMinHour(int[] prices) {
+
+        int min = prices[0];
         int minHour = 0;
-        getMinPrice(price, min, minHour);
-        getMaxPrice(price);
-        getAvgPrice(price);
-    }
 
-    private static void getMinPrice(int[] price, int min, int minHour) {
-
-        for (int i = 0; i < price.length; i++) {
-            if (price[i] < min) {
-                min = price[i];
+        for (int i = 0; i < prices.length; i++) {
+            if (prices[i] < min) {
+                min = prices[i];
                 minHour = i;
             }
         }
-        printMinPrice(min, minHour);
+        return minHour;
     }
 
-    private static void printMinPrice(int min, int minHour) {
-        System.out.println("Lägsta priset är " + min + " öre klockan " + formatHour(minHour));
+    private static int getMaxPrice(int[] prices) {
+        int max = prices[0];
+
+        for (int j : prices) {
+            if (j > max) {
+                max = j;
+            }
+        }
+        return max;
     }
 
-    private static void getMaxPrice(int[] price) {
-        int max = price[0];
+    private static int getMaxHour(int[] prices) {
+        int max = prices[0];
         int maxHour = 0;
 
-        for (int i = 0; i < price.length; i++) {
-            if (price[i] > max) {
-                max = price[i];
+        for (int i = 0; i < prices.length; i++) {
+            if (prices[i] > max) {
+                max = prices[i];
                 maxHour = i;
             }
         }
-        printMaxPrice(max, maxHour);
+        return maxHour;
     }
 
-    private static void printMaxPrice(int max, int maxHour) {
-        System.out.println("Högsta priset är " + max + " öre klockan " + formatHour(maxHour));
-    }
-
-    private static void getAvgPrice(int[] price) {
+    private static double getAvgPrice(int[] prices) {
         int sum = 0;
 
-        for (int i = 0; i < price.length; i++) {
-            sum = sum + price[i];
+        for (int j : prices) {
+            sum = sum + j;
         }
-        double avg = (double) sum / price.length;
-        printAvgPrice(avg);
+        return (double) sum / prices.length;
     }
 
-    private static void printAvgPrice(double avg) {
-        System.out.printf("Medelpriset för hela dygnet är %.2f öre\n", avg);
-    }
+    public static void sort(int[] prices) {
+        int[] pricesClone = prices.clone();
+        int[] indexOfTime = getTime(prices);
 
-    public static void sort(int[] price) {
-        int[] priceClone = price.clone();
-        int[] indexOfTime = new int[price.length];
-
-        for (int i = 0; i < price.length; i++) {
-            indexOfTime[i] = i;
-        }
-
-        boolean bubbleSort = true;
-        while (bubbleSort) {
-            bubbleSort = false;
-            for (int i = 0; i <= priceClone.length - 2; i++) {
-                if (priceClone[i] > priceClone[i + 1]) {
-                    sortWithBubble(priceClone, indexOfTime, i);
-                    bubbleSort = true;
+        boolean isSwapped = true;
+        while (isSwapped) {
+            isSwapped = false;
+            for (int i = 0; i <= pricesClone.length - 2; i++) {
+                if (pricesClone[i] > pricesClone[i + 1]) {
+                    swapWithBubble(pricesClone, indexOfTime, i);
+                    isSwapped = true;
                 }
             }
         }
 
-        printSortedCode(price, priceClone, indexOfTime);
+        printSortedCode(prices, pricesClone, indexOfTime);
     }
 
-    private static void sortWithBubble(int[] priceClone, int[] indexOfTime, int i) {
-        int temp = priceClone[i + 1];
-        priceClone[i + 1] = priceClone[i];
-        priceClone[i] = temp;
+    private static void swapWithBubble(int[] pricesClone, int[] indexOfTime, int i) {
+        int temp = pricesClone[i + 1];
+        pricesClone[i + 1] = pricesClone[i];
+        pricesClone[i] = temp;
 
         int indexTemp = indexOfTime[i + 1];
         indexOfTime[i + 1] = indexOfTime[i];
         indexOfTime[i] = indexTemp;
     }
 
-    private static void printSortedCode(int[] price, int[] priceClone, int[] index) {
-        for (int i = 0; i < price.length; i++) {
-                System.out.println(formatHour(index[i]) + "  ->  " + priceClone[i] + " öre");
+    private static void printSortedCode(int[] prices, int[] pricesClone, int[] index) {
+        for (int i = 0; i < prices.length; i++) {
+            System.out.println(formatHour(index[i]) + "  ->  " + pricesClone[i] + " öre");
         }
     }
 
-    public static void bestChargingTime(int[] price) {
+    public static void bestChargingTime(int[] prices) {
         int lowPrice = Integer.MAX_VALUE;
         int[] bestHour = new int[2];
 
-        getBest4Hour(price, lowPrice, bestHour);
+        getBest4Hour(prices, lowPrice, bestHour);
         System.out.println("Det är bäst att ladda bilen från klockan " + formatRange(bestHour[0]) + " till " + formatRange(bestHour[1]));
 
     }
 
-    private static void getBest4Hour(int[] price, int lowPrice, int[] bestHour) {
-        for (int i = 0; i < price.length; i++) {
-            if (i == price.length - 3)
-                break;
-            int sum = price[i] + price[i + 1] + price[i + 2] + price[i + 3];
+    private static void getBest4Hour(int[] prices, int lowPrice, int[] bestHour) {
+        for (int i = 0; i < prices.length - 3; i++) {
+            int sum = prices[i] + prices[i + 1] + prices[i + 2] + prices[i + 3];
             if (sum < lowPrice) {
                 lowPrice = setBest4Hour(bestHour, i, sum);
             }
@@ -175,6 +189,15 @@ public class Main {
         bestHour[0] = i;
         bestHour[1] = i + 4;
         return lowPrice;
+    }
+
+    private static int[] getTime(int[] prices) {
+        int[] indexOfTime = new int[prices.length];
+
+        for (int i = 0; i < prices.length; i++) {
+            indexOfTime[i] = i;
+        }
+        return indexOfTime;
     }
 
     public static String formatHour(int i) {
@@ -191,7 +214,6 @@ public class Main {
     }
 
     private static String formatRange(int i) {
-        int hour = i + 1;
         if (i < 9) {
             return "0" + i;
         } else if (i == 9) {
@@ -200,6 +222,39 @@ public class Main {
             return i + "";
         } else {
             return "24";
+        }
+    }
+
+    private static void graph(int[] prices) {
+        System.out.println("Work in progress");
+    }
+
+    private static void graphInProgress(int[] prices) {
+        int[] timeInHour = getTime(prices);
+        String maxNum = Integer.toString(getMaxPrice(prices));
+        String minNum = Integer.toString(getMinPrice(prices));
+        int numOfRows = 11;
+        for (int pRow = 0; pRow < numOfRows; pRow++) {
+            System.out.println();
+            for (int tColumn = 0; tColumn < timeInHour.length + 3; tColumn++) {
+                if (tColumn == 1)
+                    System.out.print("|");
+                else if (pRow == numOfRows - 2 && tColumn > 1)
+                    System.out.print("͟͟");
+                else if (tColumn == 0 && pRow == 0)
+                    System.out.print(getMaxPrice(prices));
+                else if (tColumn == 0 && pRow == numOfRows - 3) {
+                    System.out.print(getMinPrice(prices));
+                    for (int j = 0; j < maxNum.length() - minNum.length(); j++) {
+                        System.out.print(" ");
+                    }
+                } else if (tColumn == 0) {
+                    for (int i = 0; i < maxNum.length(); i++) {
+                        System.out.print(" ");
+                    }
+                } else
+                    System.out.print(" ");
+            }
         }
     }
 
