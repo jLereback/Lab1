@@ -56,7 +56,7 @@ public class Main {
         for (int i = 0; i < prices.length; i++) {
             try {
                 System.out.println("Skriv in priset för klockan " + formatHourOutput(i));
-                prices[i] = (int)(Math.random() * 400) +1;
+                prices[i] = (int) (Math.random() * 400) + 1;
                 //prices[i] = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Endast inmatning med heltal är accepterat");
@@ -236,8 +236,6 @@ public class Main {
                 printHistogram(h, w, histogram);
             }
         }
-
-
     }
 
     private static void addMinMaxPrice(int h, int w, int numRow, int[] prices, String[][] histogram) {
@@ -279,7 +277,7 @@ public class Main {
         for (int h = 0; h < numRow - 3; h++) {
             for (int w = 2; w < numColumn; w++) {
                 histogram[h][w] = " 0 ";
-                if(prices[w-2] >= maxNum / 5 * (5 - h))
+                if (prices[w - 2] >= maxNum / 5 * (5 - h))
                     histogram[h][w] = " * ";
                 else
                     histogram[h][w] = "   ";
@@ -290,7 +288,6 @@ public class Main {
     private static void printHistogram(int h, int w, String[][] histogram) {
         System.out.print(histogram[h][w]);
     }
-
 
     private static void quit() {
         System.out.println("Programmet avslutas, välkommen åter");
