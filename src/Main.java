@@ -24,8 +24,7 @@ public class Main {
                     2. Min, Max och Medel
                     3. Sortera
                     4. Bästa Laddningstid (4h)
-                    5. Horisontellt Histogram (graph)
-                    6. histogramInProgress
+                    5. Horisontellt Histogram
                     e. Avsluta
                                         
                     """);
@@ -37,8 +36,7 @@ public class Main {
                 case "2" -> minMaxAvg(prices);
                 case "3" -> sort(prices);
                 case "4" -> bestChargingTime(prices);
-                case "5" -> graph(prices);
-                case "6" -> histogramInProgress(prices);
+                case "5" -> horizontalHistogram(prices);
                 case "e" -> quit();
                 default -> System.out.println("Vänligen välj ett av alternativen nedan:");
             }
@@ -59,11 +57,12 @@ public class Main {
             try {
                 System.out.println("Skriv in priset för klockan " + formatHourOutput(i));
                 prices[i] = (int)(Math.random() * 400) +1;
+                //prices[i] = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Endast inmatning med heltal är accepterat");
                 i--;
             }
-            //Integer.parseInt(sc.nextLine());
+
         }
     }
 
@@ -147,7 +146,6 @@ public class Main {
                 }
             }
         }
-
         printSortedCode(prices, pricesClone, indexOfTime);
     }
 
@@ -173,7 +171,6 @@ public class Main {
 
         getBest4Hour(prices, lowPrice, bestHour);
         System.out.println("Det är bäst att ladda bilen från klockan " + formatHourRange(bestHour[0]) + " till " + formatHourRange(bestHour[1]));
-
     }
 
     private static void getBest4Hour(int[] prices, int lowPrice, int[] bestHour) {
@@ -223,103 +220,7 @@ public class Main {
         }
     }
 
-
-////////////////////////////////////////
-
-
-    private static void graph(int[] prices) {
-        int[] timeInHour = getTime(prices);
-        String maxNum = Integer.toString(getMaxPrice(prices));
-        String minNum = Integer.toString(getMinPrice(prices));
-        int numOfRows = 8;
-        for (int priceRow = 0; priceRow < numOfRows; priceRow++) {
-            System.out.println();
-            for (int timeColumn = 0; timeColumn < timeInHour.length + 3; timeColumn++) {
-                if (timeColumn == 1)
-                    System.out.print("|");
-                else if (priceRow == numOfRows - 2 && timeColumn > 1)
-                    System.out.print("͟͟");
-                else if (timeColumn == 0 && priceRow == 0)
-                    System.out.print(getMaxPrice(prices));
-                else if (timeColumn == 0 && priceRow == numOfRows - 3) {
-                    System.out.print(getMinPrice(prices));
-                    for (int j = 0; j < maxNum.length() - minNum.length(); j++) {
-                        System.out.print(" ");
-                    }
-                } else if (timeColumn == 0) {
-                    for (int i = 0; i < maxNum.length(); i++) {
-                        System.out.print(" ");
-                    }
-                } else
-                    System.out.print(" ");
-            }
-        }
-    }
-
-
-////////////////////////////////////////
-
-/*
-
-    private static void histogramInProgress(int[] prices) {
-
-
-        int numRow = 8;
-        int numColumn = 27;
-        String[][] histogram = new String[numRow][numColumn];
-
-        for (int h = 0; h < numRow; h++) {
-            System.out.println();
-            for (int w = 0; w < numColumn; w++) {
-                addMinMaxPrice(h, w, numRow, prices);
-                addAxis(h, w, numRow);
-                addHour(h, w, numRow);
-                addPrice(h, w, numRow);
-            }
-        }
-    }
-
-    private static void addMinMaxPrice(int h, int w, int numRow, int[] prices) {
-
-        String maxNum = Integer.toString(getMaxPrice(prices));
-        String minNum = Integer.toString(getMinPrice(prices));
-        if (w == 0 && h == 0) {
-            System.out.print(maxNum);
-        }
-        else if (w == 0 && h == numRow - 3) {
-            System.out.print(minNum);
-            for (w = 0; w < maxNum.length() - minNum.length(); w++) {
-                System.out.print(" ");
-            }
-        } else if (w == 0) {
-            for (int i = 0; i < maxNum.length(); i++) {
-                System.out.print(" ");
-            }
-        }
-    }
-    private static void addAxis(int h, int w, int numRow) {
-        if (w == 1)
-            System.out.print("|");
-        else if (h == numRow - 2 && w > 1)
-            System.out.print("͟͟͟");
-    }
-    private static void addHour(int h, int w, int numRow) {
-        if (h == numRow - 1 && w > 1)
-            System.out.print(formatHourRange(w - 2) + " ");
-    }
-    private static void addPrice(int h, int w, int numRow) {
-
-
-    }
-*/
-
-
-//////////////////////////////////////////////
-
-
-    private static void histogramInProgress(int[] prices) {
-
-
+    private static void horizontalHistogram(int[] prices) {
         int numRow = 8;
         int numColumn = 26;
         String[][] histogram = new String[numRow][numColumn];
@@ -332,7 +233,7 @@ public class Main {
                 addMinMaxPrice(h, w, numRow, prices, histogram);
                 addAxis(h, w, numRow, histogram);
                 addHour(h, w, numRow, histogram);
-                printHistogram(h, w, numRow, histogram);
+                printHistogram(h, w, histogram);
             }
         }
 
@@ -356,7 +257,6 @@ public class Main {
                 System.out.print(" ");
             }
         }
-
     }
 
     private static void addAxis(int h, int w, int numRow, String[][] histogram) {
@@ -375,8 +275,6 @@ public class Main {
 
     private static void addPrice(int numRow, int numColumn, String[][] histogram, int[] prices) {
         int maxNum = getMaxPrice(prices);
-        int minNum = getMinPrice(prices);
-
 
         for (int h = 0; h < numRow - 3; h++) {
             for (int w = 2; w < numColumn; w++) {
@@ -386,15 +284,10 @@ public class Main {
                 else
                     histogram[h][w] = "   ";
             }
-
         }
-
-
-
     }
 
-
-    private static void printHistogram(int h, int w, int numRow, String[][] histogram) {
+    private static void printHistogram(int h, int w, String[][] histogram) {
         System.out.print(histogram[h][w]);
     }
 
