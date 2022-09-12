@@ -24,7 +24,7 @@ public class Main {
                     2. Min, Max och Medel
                     3. Sortera
                     4. Bästa Laddningstid (4h)
-                    5. Horisontellt Histogram
+                    5. Visa Horisontellt Histogram
                     e. Avsluta
                                         
                     """);
@@ -74,9 +74,12 @@ public class Main {
     }
 
     private static int getMinPrice(int[] prices) {
-
         int min = prices[0];
+        min = setMinPrice(prices, min);
+        return min;
+    }
 
+    private static int setMinPrice(int[] prices, int min) {
         for (int j : prices) {
             if (j < min) {
                 min = j;
@@ -90,6 +93,11 @@ public class Main {
         int min = prices[0];
         int minHour = 0;
 
+        minHour = setMinHour(prices, min, minHour);
+        return minHour;
+    }
+
+    private static int setMinHour(int[] prices, int min, int minHour) {
         for (int i = 0; i < prices.length; i++) {
             if (prices[i] < min) {
                 min = prices[i];
@@ -101,11 +109,14 @@ public class Main {
 
     private static int getMaxPrice(int[] prices) {
         int max = prices[0];
+        max = setMaxPrice(prices, max);
+        return max;
+    }
 
+    private static int setMaxPrice(int[] prices, int max) {
         for (int j : prices) {
-            if (j > max) {
+            if (j > max)
                 max = j;
-            }
         }
         return max;
     }
@@ -176,9 +187,8 @@ public class Main {
     private static void getBest4Hour(int[] prices, int lowPrice, int[] bestHour) {
         for (int i = 0; i < prices.length - 3; i++) {
             int sum = prices[i] + prices[i + 1] + prices[i + 2] + prices[i + 3];
-            if (sum < lowPrice) {
+            if (sum < lowPrice)
                 lowPrice = setBest4Hour(bestHour, i, sum);
-            }
         }
     }
 
@@ -201,23 +211,21 @@ public class Main {
 
     public static String formatHourOutput(int hour) {
         int toNextHour = hour + 1;
-        if (hour < 9) {
+        if (hour < 9)
             return "0" + hour + "-0" + toNextHour;
-        } else if (hour == 9) {
+        else if (hour == 9)
             return "0" + hour + "-" + toNextHour;
-        } else {
+        else
             return hour + "-" + toNextHour;
-        }
     }
 
     private static String formatHourRange(int hour) {
-        if (hour < 9) {
+        if (hour < 9)
             return "0" + hour;
-        } else if (hour == 9) {
+        else if (hour == 9)
             return "0" + hour;
-        } else {
+        else
             return String.valueOf(hour);
-        }
     }
 
     private static void horizontalHistogram(int[] prices) {
@@ -239,31 +247,61 @@ public class Main {
     }
 
     private static void addMinMaxPrice(int h, int w, int numRow, int[] prices, String[][] histogram) {
+        String maxNum = getMaxToAxis(prices);
+        String minNum = getMinToAxis(prices);
 
-        String maxNum = Integer.toString(getMaxPrice(prices));
-        String minNum = Integer.toString(getMinPrice(prices));
-        if (w == 0 && h == 0) {
-            histogram[h][w] = maxNum;
-        } else if (w == 0 && h == numRow - 3) {
-            histogram[h][w] = minNum;
-            for (w = 0; w < maxNum.length() - minNum.length(); w++) {
-                System.out.print(" ");
-            }
-        } else if (w == 0) {
-            histogram[h][w] = " ";
-            for (int i = 0; i < maxNum.length() - 1; i++) {
-                System.out.print(" ");
-            }
+        if (w == 0 && h == 0)
+            addMaxPrice(w, maxNum, histogram[h]);
+        else if (w == 0 && h == numRow - 3)
+            addMinPrice(w, maxNum, minNum, histogram[h]);
+        else if (w == 0)
+            lineUpAxis(w, maxNum, histogram[h]);
+    }
+
+    private static void addMaxPrice(int w, String maxNum, String[] histogram) {
+        histogram[w] = maxNum;
+    }
+
+    private static void addMinPrice(int w, String maxNum, String minNum, String[] histogram) {
+        histogram[w] = minNum;
+        lineUpMinPrice(maxNum, minNum);
+    }
+
+    private static void lineUpMinPrice(String maxNum, String minNum) {
+        int w;
+        for (w = 0; w < maxNum.length() - minNum.length(); w++) {
+            System.out.print(" ");
         }
+    }
+
+    private static void lineUpAxis(int w, String maxNum, String[] histogram) {
+        histogram[w] = " ";
+        for (int i = 0; i < maxNum.length() - 1; i++) {
+            System.out.print(" ");
+        }
+    }
+
+    private static String getMaxToAxis(int[] prices) {
+        return Integer.toString(getMaxPrice(prices));
+    }
+
+    private static String getMinToAxis(int[] prices) {
+        return Integer.toString(getMinPrice(prices));
     }
 
     private static void addAxis(int h, int w, int numRow, String[][] histogram) {
         if (w == 1)
-            histogram[h][w] = "|";
+            addVerticalAxis(w, histogram[h]);
         else if (h == numRow - 2 && w > 1)
-            histogram[h][w] = "͟͟͟";
-        else if (h == numRow - 3 && w > 1)
-            histogram[h][w] = " * ";
+            addHorizontalAxis(w, histogram[h]);
+    }
+
+    private static void addHorizontalAxis(int w, String[] histogram) {
+        histogram[w] = "͟͟͟";
+    }
+
+    private static void addVerticalAxis(int w, String[] histogram) {
+        histogram[w] = "|";
     }
 
     private static void addHour(int h, int w, int numRow, String[][] histogram) {
@@ -272,17 +310,26 @@ public class Main {
     }
 
     private static void addPrice(int numRow, int numColumn, String[][] histogram, int[] prices) {
-        int maxNum = getMaxPrice(prices);
-
-        for (int h = 0; h < numRow - 3; h++) {
+        for (int h = 0; h < numRow - 2; h++) {
             for (int w = 2; w < numColumn; w++) {
-                histogram[h][w] = " 0 ";
-                if (prices[w - 2] >= maxNum / 5 * (5 - h))
-                    histogram[h][w] = " * ";
-                else
-                    histogram[h][w] = "   ";
+                addMarkersToHistogram(numRow, histogram, prices, h, w);
             }
         }
+    }
+
+    private static void addMarkersToHistogram(int numRow, String[][] histogram, int[] prices, int h, int w) {
+        if (prices[w - 2] >= getMaxPrice(prices) / 5 * (5 - h) || h == numRow - 3)
+            addPriceMark(w, histogram[h]);
+        else
+            lineUpMarkers(w, histogram[h]);
+    }
+
+    private static void lineUpMarkers(int w, String[] histogram) {
+        histogram[w] = "   ";
+    }
+
+    private static void addPriceMark(int w, String[] histogram) {
+        histogram[w] = " * ";
     }
 
     private static void printHistogram(int h, int w, String[][] histogram) {
