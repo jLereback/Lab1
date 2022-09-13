@@ -62,12 +62,10 @@ public class Main {
                 System.out.println("Endast inmatning med heltal är accepterat");
                 i--;
             }
-
         }
     }
 
     private static void minMaxAvg(int[] prices) {
-
         System.out.println("Lägsta priset är " + getMinPrice(prices) + " öre klockan " + formatHourOutput(getMinHour(prices)));
         System.out.println("Högsta priset är " + getMaxPrice(prices) + " öre klockan " + formatHourOutput(getMaxHour(prices)));
         System.out.printf("Medelpriset för hela dygnet är %.2f öre\n", getAvgPrice(prices));
@@ -81,9 +79,8 @@ public class Main {
 
     private static int setMinPrice(int[] prices, int min) {
         for (int j : prices) {
-            if (j < min) {
+            if (j < min)
                 min = j;
-            }
         }
         return min;
     }
@@ -136,10 +133,8 @@ public class Main {
 
     private static double getAvgPrice(int[] prices) {
         int sum = 0;
-
-        for (int j : prices) {
+        for (int j : prices)
             sum = sum + j;
-        }
         return (double) sum / prices.length;
     }
 
@@ -171,9 +166,8 @@ public class Main {
     }
 
     private static void printSortedCode(int[] prices, int[] pricesClone, int[] index) {
-        for (int i = 0; i < prices.length; i++) {
+        for (int i = 0; i < prices.length; i++)
             System.out.println(formatHourOutput(index[i]) + "  ->  " + pricesClone[i] + " öre");
-        }
     }
 
     public static void bestChargingTime(int[] prices) {
@@ -203,9 +197,8 @@ public class Main {
     private static int[] getTime(int[] prices) {
         int[] indexOfTime = new int[prices.length];
 
-        for (int i = 0; i < prices.length; i++) {
+        for (int i = 0; i < prices.length; i++)
             indexOfTime[i] = i;
-        }
         return indexOfTime;
     }
 
@@ -269,16 +262,14 @@ public class Main {
 
     private static void lineUpMinPrice(String maxNum, String minNum) {
         int w;
-        for (w = 0; w < maxNum.length() - minNum.length(); w++) {
+        for (w = 0; w < maxNum.length() - minNum.length(); w++)
             System.out.print(" ");
-        }
     }
 
     private static void lineUpAxis(int w, String maxNum, String[] histogram) {
         histogram[w] = " ";
-        for (int i = 0; i < maxNum.length() - 1; i++) {
+        for (int i = 0; i < maxNum.length() - 1; i++)
             System.out.print(" ");
-        }
     }
 
     private static String getMaxToAxis(int[] prices) {
@@ -311,9 +302,8 @@ public class Main {
 
     private static void addPrice(int numRow, int numColumn, String[][] histogram, int[] prices) {
         for (int h = 0; h < numRow - 2; h++) {
-            for (int w = 2; w < numColumn; w++) {
+            for (int w = 2; w < numColumn; w++)
                 addMarkersToHistogram(numRow, histogram, prices, h, w);
-            }
         }
     }
 
