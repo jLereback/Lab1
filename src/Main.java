@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -16,8 +17,7 @@ public class Main {
         String choice;
         do {
             System.out.println("""
-                                        
-                                        
+                    
                     Elpriser
                     ========
                     1. Inmatning
@@ -26,7 +26,7 @@ public class Main {
                     4. Bästa Laddningstid (4h)
                     5. Visa Horisontellt Histogram
                     e. Avsluta
-                                        
+                    
                     """);
             choice = sc.nextLine();
             choice = choice.toLowerCase();
@@ -132,14 +132,15 @@ public class Main {
     }
 
     private static double getAvgPrice(int[] prices) {
-        int sum = 0;
+        double sum = 0;
         for (int j : prices)
             sum = sum + j;
-        return (double) sum / prices.length;
+        return sum / prices.length;
     }
 
     public static void sort(int[] prices) {
-        int[] pricesClone = prices.clone();
+        int[] pricesClone = Arrays.copyOf(prices, prices.length);
+
         int[] indexOfTime = getTime(prices);
 
         boolean isSwapped = true;
