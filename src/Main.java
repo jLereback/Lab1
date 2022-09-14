@@ -8,7 +8,7 @@ public class Main {
         menu();
     }
 
-    public static void menu() {
+    private static void menu() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Hur många timmar vill du använda?");
 
@@ -43,7 +43,7 @@ public class Main {
         } while (!choice.equals("e"));
     }
 
-    public static void input(int[] prices) {
+    private static void input(int[] prices) {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Skriv in priserna i hela ören och tryck på \"Enter\" mellan inmatningarna");
@@ -138,7 +138,7 @@ public class Main {
         return sum / prices.length;
     }
 
-    public static void sort(int[] prices) {
+    private static void sort(int[] prices) {
         int[] pricesClone = Arrays.copyOf(prices, prices.length);
 
         int[] indexOfTime = getTime(prices);
@@ -171,7 +171,7 @@ public class Main {
             System.out.println(formatHourOutput(index[i]) + "  ->  " + pricesClone[i] + " öre");
     }
 
-    public static void bestChargingTime(int[] prices) {
+    private static void bestChargingTime(int[] prices) {
         int lowPrice = Integer.MAX_VALUE;
         int[] bestHour = new int[2];
 
