@@ -17,7 +17,7 @@ public class Main {
         String choice;
         do {
             System.out.println("""
-                    
+                                        
                     Elpriser
                     ========
                     1. Inmatning
@@ -26,7 +26,7 @@ public class Main {
                     4. Bästa Laddningstid (4h)
                     5. Visa Horisontellt Histogram
                     e. Avsluta
-                    
+                                        
                     """);
             choice = sc.nextLine();
             choice = choice.toLowerCase();
@@ -172,19 +172,21 @@ public class Main {
     }
 
     private static void bestChargingTime(int[] prices) {
-        int lowPrice = Integer.MAX_VALUE;
         int[] bestHour = new int[2];
 
-        getBest4Hour(prices, lowPrice, bestHour);
+        getBest4Hour(prices, bestHour);
         System.out.println("Det är bäst att ladda bilen från klockan " + formatHourRange(bestHour[0]) + " till " + formatHourRange(bestHour[1]));
+        System.out.printf("Under den tiden är medelpriset: %.2f öre", get4hAvgPrice(prices, bestHour));
     }
 
-    private static void getBest4Hour(int[] prices, int lowPrice, int[] bestHour) {
+    private static double getBest4Hour(int[] prices, int[] bestHour) {
+        double lowPrice = Integer.MAX_VALUE;
         for (int i = 0; i < prices.length - 3; i++) {
             int sum = prices[i] + prices[i + 1] + prices[i + 2] + prices[i + 3];
             if (sum < lowPrice)
                 lowPrice = setBest4Hour(bestHour, i, sum);
         }
+        return lowPrice;
     }
 
     private static int setBest4Hour(int[] bestHour, int i, int sum) {
@@ -193,6 +195,10 @@ public class Main {
         bestHour[0] = i;
         bestHour[1] = i + 4;
         return lowPrice;
+    }
+
+    private static double get4hAvgPrice(int[] prices, int[] bestHour) {
+        return getBest4Hour(prices, bestHour) / 4;
     }
 
     private static int[] getTime(int[] prices) {
@@ -214,9 +220,7 @@ public class Main {
     }
 
     private static String formatHourRange(int hour) {
-        if (hour < 9)
-            return "0" + hour;
-        else if (hour == 9)
+        if (hour < 10)
             return "0" + hour;
         else
             return String.valueOf(hour);
