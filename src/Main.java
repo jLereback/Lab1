@@ -10,14 +10,12 @@ public class Main {
 
     private static void menu() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Hur många timmar vill du använda?");
-
-        int[] prices = new int[sc.nextInt()];
+        int[] prices = new int[24];
 
         String choice;
         do {
             System.out.println("""
-                                        
+                    
                     Elpriser
                     ========
                     1. Inmatning
@@ -26,7 +24,6 @@ public class Main {
                     4. Bästa Laddningstid (4h)
                     5. Visa Horisontellt Histogram
                     e. Avsluta
-                                        
                     """);
             choice = sc.nextLine();
             choice = choice.toLowerCase();
@@ -56,8 +53,7 @@ public class Main {
         for (int i = 0; i < prices.length; i++) {
             try {
                 System.out.println("Skriv in priset för klockan " + formatHourOutput(i));
-                prices[i] = (int) (Math.random() * 400) + 1;
-                //prices[i] = Integer.parseInt(sc.nextLine());
+                prices[i] = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Endast inmatning med heltal är accepterat");
                 i--;
@@ -234,14 +230,18 @@ public class Main {
         addPrice(numRow, numColumn, histogram, prices);
 
         for (int h = 0; h < numRow; h++) {
-            System.out.println();
             for (int w = 0; w < numColumn; w++) {
                 addMinMaxPrice(h, w, numRow, prices, histogram);
                 addAxis(h, w, numRow, histogram);
                 addHour(h, w, numRow, histogram);
                 printHistogram(h, w, histogram);
             }
+            printNewLine();
         }
+    }
+
+    private static void printNewLine() {
+        System.out.print("\n");
     }
 
     private static void addMinMaxPrice(int h, int w, int numRow, int[] prices, String[][] histogram) {
@@ -266,8 +266,7 @@ public class Main {
     }
 
     private static void lineUpMinPrice(String maxNum, String minNum) {
-        int w;
-        for (w = 0; w < maxNum.length() - minNum.length(); w++)
+        for (int w = 0; w < maxNum.length() - minNum.length(); w++)
             System.out.print(" ");
     }
 
@@ -313,7 +312,7 @@ public class Main {
     }
 
     private static void addMarkersToHistogram(int numRow, String[][] histogram, int[] prices, int h, int w) {
-        if (prices[w - 2] >= getMaxPrice(prices) / 5 * (5 - h) || h == numRow - 3)
+        if (prices[w - 2] == getMaxPrice(prices) || prices[w - 2] > getMaxPrice(prices) / 5 * (5 - h) || (h == numRow - 3))
             addPriceMark(w, histogram[h]);
         else
             lineUpMarkers(w, histogram[h]);
